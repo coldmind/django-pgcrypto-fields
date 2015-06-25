@@ -1,5 +1,6 @@
 from django.utils import six
 
+
 class EncryptedProxyField(object):
     """Descriptor for encrypted values.
 
