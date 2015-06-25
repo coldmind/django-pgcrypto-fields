@@ -11,4 +11,5 @@ release:
 test:
 	@coverage run ./tests/run.py
 	@coverage report --show-missing
-	@flake8 .
+	@flake8 ./pgcrypto_fields
+	@flake8 ./tests

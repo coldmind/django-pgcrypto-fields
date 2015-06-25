@@ -1,3 +1,7 @@
+## v0.7.0 - python2
+
+Ported library to python2
+
 ## v0.7.0
 
 * Make `get_placeholder` accepts a new argument `compiler`

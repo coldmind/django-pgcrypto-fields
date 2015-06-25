@@ -82,11 +82,11 @@ class TestEncryptedTextFieldModel(TestCase):
         self.assertIsInstance(instance.hmac_field, unicode)
 
         self.assertIsInstance(instance.email_pgp_pub_field, unicode)
-        self.assertIsInstance(instance.integer_pgp_pub_field, unicode)
+        self.assertIsInstance(instance.integer_pgp_pub_field, int)
         self.assertIsInstance(instance.pgp_pub_field, unicode)
 
         self.assertIsInstance(instance.email_pgp_sym_field, unicode)
-        self.assertIsInstance(instance.integer_pgp_sym_field, unicode)
+        self.assertIsInstance(instance.integer_pgp_sym_field, int)
         self.assertIsInstance(instance.pgp_sym_field, unicode)
 
     def test_fields_descriptor_is_not_instance(self):
@@ -117,7 +117,6 @@ class TestEncryptedTextFieldModel(TestCase):
 
         instance = self.model.objects.get()
         value = instance.pgp_pub_field
-
         self.assertEqual(value, expected)
 
     def test_value_pgp_pub_multipe(self):

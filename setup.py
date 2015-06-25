@@ -1,7 +1,7 @@
 from setuptools import find_packages, setup
 
 
-version = '0.7.0'
+version = '0.7.0.python2'
 
 
 setup(
@@ -12,16 +12,16 @@ setup(
     license='BSD',
     description='Encrypted fields dealing with pgcrypto postgres extension.',
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 4 - Beta (python2)',
         'Framework :: Django',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
         'Natural Language :: English',
-        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 2.7',
         'Topic :: Database',
         'Topic :: Security :: Cryptography',
     ],
-    author='Incuna Ltd',
-    author_email='admin@incuna.com',
-    url='https://github.com/incuna/django-pgcrypto-fields',
+    author='Incuna Ltd, coldmind',
+    author_email='admin@incuna.com, me@asokolovskiy.com',
+    url='https://github.com/coldmind/django-pgcrypto-fields',
 )

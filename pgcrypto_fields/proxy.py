@@ -1,3 +1,5 @@
+from django.utils import six
+
 class EncryptedProxyField(object):
     """Descriptor for encrypted values.
 
@@ -31,10 +33,10 @@ class EncryptedProxyField(object):
         # Value assigned from `__set__`
         value = instance.__dict__[self.field.name]
 
-        if isinstance(value, unicode):
+        if isinstance(value, six.binary_type):
             return value
 
-        if isinstance(value, memoryview):
+        if isinstance(value, buffer):
             kwargs = {self.field.name: self.aggregate(self.field.name)}
             kw_value = self.model.objects.filter(pk=instance.pk).aggregate(**kwargs)
             instance.__dict__[self.field.name] = kw_value[self.field.name]
