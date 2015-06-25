@@ -18,7 +18,7 @@ PRIVATE_PGP_KEY_PATH = os.path.abspath(os.path.join(BASEDIR, 'tests/keys/private
 settings.configure(
     DATABASES={
         'default': dj_database_url.config(
-            default='postgres://postgres:postgres@localhost/pgcrypto_fields'
+            default='postgres://localhost/pgcrypto_fields'
         ),
     },
     INSTALLED_APPS=(
