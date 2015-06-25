@@ -22,9 +22,8 @@ class TestTextFieldHash(TestCase):
     def test_get_placeholder(self):
         """Assert `get_placeholder` hash value only once."""
         for field in KEYED_FIELDS:
-            with self.subTest(field=field):
-                placeholder = field().get_placeholder('\\x')
-                self.assertEqual(placeholder, '%s')
+            placeholder = field().get_placeholder('\\x')
+            self.assertEqual(placeholder, '%s')
 
 
 class TestPGPMixin(TestCase):
@@ -32,20 +31,17 @@ class TestPGPMixin(TestCase):
     def test_check(self):
         """Assert `max_length` check does not return any error."""
         for field in PGP_FIELDS:
-            with self.subTest(field=field):
-                self.assertEqual(field(name='field').check(), [])
+            self.assertEqual(field(name='field').check(), [])
 
     def test_max_length(self):
         """Assert `max_length` is ignored."""
         for field in PGP_FIELDS:
-            with self.subTest(field=field):
-                self.assertEqual(field(max_length=42).max_length, None)
+            self.assertEqual(field(max_length=42).max_length, None)
 
     def test_db_type(self):
         """Check db_type is `bytea`."""
         for field in PGP_FIELDS:
-            with self.subTest(field=field):
-                self.assertEqual(field().db_type(), 'bytea')
+            self.assertEqual(field().db_type(), 'bytea')
 
 
 class TestEmailPGPMixin(TestCase):
@@ -53,9 +49,8 @@ class TestEmailPGPMixin(TestCase):
     def test_max_length_validator(self):
         """Check `MaxLengthValidator` is not set."""
         for field in EMAIL_PGP_FIELDS:
-            with self.subTest(field=field):
-                field_validated = field().run_validators(value='value@value.com')
-                self.assertEqual(field_validated, None)
+            field_validated = field().run_validators(value='value@value.com')
+            self.assertEqual(field_validated, None)
 
 
 class TestEncryptedTextFieldModel(TestCase):
@@ -76,23 +71,23 @@ class TestEncryptedTextFieldModel(TestCase):
             'integer_pgp_sym_field',
             'pgp_sym_field',
         )
-        self.assertCountEqual(fields, expected)
+        self.assertItemsEqual(fields, expected)
 
     def test_value_returned_is_not_bytea(self):
         """Assert value returned is not a memoryview instance."""
         EncryptedModelFactory.create()
 
         instance = self.model.objects.get()
-        self.assertIsInstance(instance.digest_field, str)
-        self.assertIsInstance(instance.hmac_field, str)
+        self.assertIsInstance(instance.digest_field, unicode)
+        self.assertIsInstance(instance.hmac_field, unicode)
 
-        self.assertIsInstance(instance.email_pgp_pub_field, str)
-        self.assertIsInstance(instance.integer_pgp_pub_field, int)
-        self.assertIsInstance(instance.pgp_pub_field, str)
+        self.assertIsInstance(instance.email_pgp_pub_field, unicode)
+        self.assertIsInstance(instance.integer_pgp_pub_field, unicode)
+        self.assertIsInstance(instance.pgp_pub_field, unicode)
 
-        self.assertIsInstance(instance.email_pgp_sym_field, str)
-        self.assertIsInstance(instance.integer_pgp_sym_field, int)
-        self.assertIsInstance(instance.pgp_sym_field, str)
+        self.assertIsInstance(instance.email_pgp_sym_field, unicode)
+        self.assertIsInstance(instance.integer_pgp_sym_field, unicode)
+        self.assertIsInstance(instance.pgp_sym_field, unicode)
 
     def test_fields_descriptor_is_not_instance(self):
         """`EncryptedProxyField` instance returns itself when accessed from the model."""
@@ -190,7 +185,7 @@ class TestEncryptedTextFieldModel(TestCase):
 
         queryset = EncryptedModel.objects.filter(digest_field__hash_of=value)
 
-        self.assertCountEqual(queryset, [expected])
+        self.assertItemsEqual(queryset, [expected])
 
     def test_hmac_lookup(self):
         """Assert we can filter a digest value."""
@@ -199,7 +194,7 @@ class TestEncryptedTextFieldModel(TestCase):
         EncryptedModelFactory.create()
 
         queryset = EncryptedModel.objects.filter(hmac_field__hash_of=value)
-        self.assertCountEqual(queryset, [expected])
+        self.assertItemsEqual(queryset, [expected])
 
     def test_default_lookup(self):
         """Assert default lookup can be called."""
@@ -290,5 +285,4 @@ class TestEncryptedTextFieldModel(TestCase):
         fields = self.model._meta.get_all_field_names()
         fields.remove('id')
         for field in fields:
-            with self.subTest(field=field):
-                self.assertEqual(getattr(instance, field), None)
+            self.assertEqual(getattr(instance, field), None)

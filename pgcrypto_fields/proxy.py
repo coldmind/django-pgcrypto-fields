@@ -1,4 +1,4 @@
-class EncryptedProxyField:
+class EncryptedProxyField(object):
     """Descriptor for encrypted values.
 
     Decrypted values will query the database through the field's model.
@@ -31,7 +31,7 @@ class EncryptedProxyField:
         # Value assigned from `__set__`
         value = instance.__dict__[self.field.name]
 
-        if isinstance(value, str):
+        if isinstance(value, unicode):
             return value
 
         if isinstance(value, memoryview):
