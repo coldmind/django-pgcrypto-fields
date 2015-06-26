@@ -1,6 +1,4 @@
-import datetime
-
-import fields
+from __future__ import unicode_literals
 
 from django.utils import six
 
@@ -60,6 +58,6 @@ class EncryptedProxyField(object):
         instance.__dict__[self.field.name] = value
 
     def _parse_decrypted_value(self, value, field):
-        if isinstance(field, fields.DatePGPPublicKeyField):
-            value = datetime.datetime.strptime(value, "%Y-%m-%d").date()
+        if hasattr(field.__class__, '_parse_decrypted_value'):
+            return field.__class__._parse_decrypted_value(value)
         return value

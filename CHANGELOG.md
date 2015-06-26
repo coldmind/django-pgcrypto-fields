@@ -1,10 +1,14 @@
-## v0.7.0 - python2
+## v0.8.1.python2
 
-Ported library to python2
+* Added `NullBooleanPGPPublicKeyField` field
 
-## v0.8.0
+## v0.8.0.python2
 
 * Added `DatePGPPublicKeyField` field
+
+## v0.7.0.python2
+
+Ported library to python2
 
 ## v0.7.0
 

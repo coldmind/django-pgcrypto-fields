@@ -1,5 +1,6 @@
 import datetime
 
+from django.core.exceptions import ValidationError
 from django.test import TestCase
 
 from pgcrypto_fields import aggregates, proxy
@@ -74,6 +75,7 @@ class TestEncryptedTextFieldModel(TestCase):
             'integer_pgp_sym_field',
             'pgp_sym_field',
             'pgp_pub_date_field',
+            'pgp_pub_null_boolean_field',
         )
         self.assertItemsEqual(fields, expected)
 
@@ -131,6 +133,25 @@ class TestEncryptedTextFieldModel(TestCase):
         instance = self.model.objects.get()
         value = instance.pgp_pub_date_field
         self.assertEqual(value, expected)
+
+    def test_value_pgp_null_boolean_pub(self):
+        """Assert we can get back the decrypted values."""
+        EncryptedModelFactory.create(pgp_pub_null_boolean_field=None)
+        instance = self.model.objects.last()
+        self.assertIsNone(instance.pgp_pub_null_boolean_field)
+
+        EncryptedModelFactory.create(pgp_pub_null_boolean_field=True)
+        instance = self.model.objects.last()
+        self.assertTrue(instance.pgp_pub_null_boolean_field)
+
+        EncryptedModelFactory.create(pgp_pub_null_boolean_field=False)
+        instance = self.model.objects.last()
+        self.assertFalse(instance.pgp_pub_null_boolean_field)
+
+    def test_wrong_value_pgp_null_boolean_pub(self):
+        """Assert wrong value raises ValidationError."""
+        with self.assertRaises(ValidationError):
+            EncryptedModelFactory.create(pgp_pub_null_boolean_field='Wrong')
 
     def test_value_pgp_pub_multipe(self):
         """Assert we get back the correct value when the table contains data."""

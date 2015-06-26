@@ -1,5 +1,8 @@
 from __future__ import unicode_literals
 
+import datetime
+
+from django.core.exceptions import ValidationError
 from django.db import models
 
 from pgcrypto_fields import (
@@ -50,6 +53,51 @@ class TextPGPPublicKeyField(PGPPublicKeyFieldMixin, models.TextField):
 class DatePGPPublicKeyField(PGPPublicKeyFieldMixin, models.DateField):
     """Date PGP public key encrypted field."""
     encrypt_sql = PGP_PUB_ENCRYPT_SQL
+
+    @classmethod
+    def _parse_decrypted_value(cls, value):
+        return datetime.datetime.strptime(value, "%Y-%m-%d").date()
+
+
+class NullBooleanPGPPublicKeyField(PGPPublicKeyFieldMixin, models.TextField):
+    """NullBoolean PGP public key encrypted field."""
+
+    encrypt_sql = PGP_PUB_ENCRYPT_SQL
+
+    def __init__(self, *args, **kwargs):
+        """Overriding __init__ to behave like NullBooleanField."""
+        kwargs['null'] = True
+        kwargs['blank'] = True
+        super(NullBooleanPGPPublicKeyField, self).__init__(*args, **kwargs)
+
+    @classmethod
+    def _parse_decrypted_value(cls, value):
+        if value == 'True':
+            value = True
+        elif value == 'False':
+            value = False
+        elif value in ['None', '']:
+            value = None
+        else:
+            raise ValueError(
+                'Unexpected returned value. '
+                'Value: %s, type: %s' % (value, type(value))
+            )
+        return value
+
+    def get_prep_value(self, value):
+        """Before encryption, need to save values as text."""
+        if value is None or value == '':
+            return 'None'
+        elif value is True:
+            return 'True'
+        elif value is False:
+            return 'False'
+        else:
+            raise ValidationError(
+                'Value "%s" is not valid. '
+                'Need to be True, False, None or empty string' % value
+            )
 
 
 class EmailPGPSymmetricKeyField(EmailPGPSymmetricKeyFieldMixin, models.EmailField):
