@@ -47,6 +47,11 @@ class TextPGPPublicKeyField(PGPPublicKeyFieldMixin, models.TextField):
     encrypt_sql = PGP_PUB_ENCRYPT_SQL
 
 
+class DatePGPPublicKeyField(PGPPublicKeyFieldMixin, models.DateField):
+    """Date PGP public key encrypted field."""
+    encrypt_sql = PGP_PUB_ENCRYPT_SQL
+
+
 class EmailPGPSymmetricKeyField(EmailPGPSymmetricKeyFieldMixin, models.EmailField):
     """Email PGP symmetric key encrypted field."""
     encrypt_sql = PGP_SYM_ENCRYPT_SQL

@@ -1,3 +1,7 @@
+import datetime
+
+import fields
+
 from django.utils import six
 
 
@@ -40,7 +44,10 @@ class EncryptedProxyField(object):
         if isinstance(value, buffer):
             kwargs = {self.field.name: self.aggregate(self.field.name)}
             kw_value = self.model.objects.filter(pk=instance.pk).aggregate(**kwargs)
-            instance.__dict__[self.field.name] = kw_value[self.field.name]
+            decrypted_value = self._parse_decrypted_value(
+                kw_value[self.field.name], self.field
+            )
+            instance.__dict__[self.field.name] = decrypted_value
 
         return instance.__dict__[self.field.name]
 
@@ -51,3 +58,8 @@ class EncryptedProxyField(object):
         The value will be keyed by the field's name.
         """
         instance.__dict__[self.field.name] = value
+
+    def _parse_decrypted_value(self, value, field):
+        if isinstance(field, fields.DatePGPPublicKeyField):
+            value = datetime.datetime.strptime(value, "%Y-%m-%d").date()
+        return value

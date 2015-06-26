@@ -1,3 +1,5 @@
+import datetime
+
 from django.test import TestCase
 
 from pgcrypto_fields import aggregates, proxy
@@ -14,6 +16,7 @@ PGP_FIELDS = EMAIL_PGP_FIELDS + (
     fields.IntegerPGPSymmetricKeyField,
     fields.TextPGPPublicKeyField,
     fields.TextPGPSymmetricKeyField,
+    fields.DatePGPPublicKeyField,
 )
 
 
@@ -70,6 +73,7 @@ class TestEncryptedTextFieldModel(TestCase):
             'email_pgp_sym_field',
             'integer_pgp_sym_field',
             'pgp_sym_field',
+            'pgp_pub_date_field',
         )
         self.assertItemsEqual(fields, expected)
 
@@ -117,6 +121,15 @@ class TestEncryptedTextFieldModel(TestCase):
 
         instance = self.model.objects.get()
         value = instance.pgp_pub_field
+        self.assertEqual(value, expected)
+
+    def test_value_pgp_date_pub(self):
+        """Assert we can get back the decrypted value."""
+        expected = datetime.date.today()
+        EncryptedModelFactory.create(pgp_pub_date_field=expected)
+
+        instance = self.model.objects.get()
+        value = instance.pgp_pub_date_field
         self.assertEqual(value, expected)
 
     def test_value_pgp_pub_multipe(self):

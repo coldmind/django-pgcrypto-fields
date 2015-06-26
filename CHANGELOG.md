@@ -2,6 +2,10 @@
 
 Ported library to python2
 
+## v0.8.0
+
+* Added `DatePGPPublicKeyField` field
+
 ## v0.7.0
 
 * Make `get_placeholder` accepts a new argument `compiler`
