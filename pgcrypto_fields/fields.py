@@ -52,11 +52,20 @@ class TextPGPPublicKeyField(PGPPublicKeyFieldMixin, models.TextField):
 
 class DatePGPPublicKeyField(PGPPublicKeyFieldMixin, models.DateField):
     """Date PGP public key encrypted field."""
+
     encrypt_sql = PGP_PUB_ENCRYPT_SQL
 
     @classmethod
     def _parse_decrypted_value(cls, value):
         return datetime.datetime.strptime(value, "%Y-%m-%d").date()
+
+    def get_prep_value(self, value):
+        """
+        Seem to be a bug in django==1.8.
+
+        Need explicit string cast to avoid quotes.
+        """
+        return "%s" % super(DatePGPPublicKeyField, self).get_prep_value(value)
 
 
 class NullBooleanPGPPublicKeyField(PGPPublicKeyFieldMixin, models.TextField):
