@@ -1,7 +1,7 @@
 from setuptools import find_packages, setup
 
 
-version = '0.8.0.python2'
+version = '0.8.1.python2'
 
 
 setup(
