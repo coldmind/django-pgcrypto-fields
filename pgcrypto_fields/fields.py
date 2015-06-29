@@ -2,7 +2,6 @@ from __future__ import unicode_literals
 
 import datetime
 
-from django.core.exceptions import ValidationError
 from django.db import models
 
 from pgcrypto_fields import (
@@ -68,16 +67,17 @@ class DatePGPPublicKeyField(PGPPublicKeyFieldMixin, models.DateField):
         return "%s" % super(DatePGPPublicKeyField, self).get_prep_value(value)
 
 
-class NullBooleanPGPPublicKeyField(PGPPublicKeyFieldMixin, models.TextField):
+class NullBooleanPGPPublicKeyField(PGPPublicKeyFieldMixin, models.NullBooleanField):
     """NullBoolean PGP public key encrypted field."""
 
     encrypt_sql = PGP_PUB_ENCRYPT_SQL
 
-    def __init__(self, *args, **kwargs):
-        """Overriding __init__ to behave like NullBooleanField."""
-        kwargs['null'] = True
-        kwargs['blank'] = True
-        super(NullBooleanPGPPublicKeyField, self).__init__(*args, **kwargs)
+    def get_prep_value(self, value):
+        """Before encryption, need to prepare values."""
+        value = super(NullBooleanPGPPublicKeyField, self).get_prep_value(value)
+        if value is None:
+            return None
+        return "%s" % bool(value)
 
     @classmethod
     def _parse_decrypted_value(cls, value):
@@ -85,28 +85,12 @@ class NullBooleanPGPPublicKeyField(PGPPublicKeyFieldMixin, models.TextField):
             value = True
         elif value == 'False':
             value = False
-        elif value in ['None', '']:
-            value = None
         else:
             raise ValueError(
                 'Unexpected returned value. '
                 'Value: %s, type: %s' % (value, type(value))
             )
         return value
-
-    def get_prep_value(self, value):
-        """Before encryption, need to save values as text."""
-        if value is None or value == '':
-            return 'None'
-        elif value is True:
-            return 'True'
-        elif value is False:
-            return 'False'
-        else:
-            raise ValidationError(
-                'Value "%s" is not valid. '
-                'Need to be True, False, None or empty string' % value
-            )
 
 
 class EmailPGPSymmetricKeyField(EmailPGPSymmetricKeyFieldMixin, models.EmailField):
