@@ -1,3 +1,7 @@
+## v0.8.3.python2
+
+* Fixed `DatePGPPublicKeyField` with nullable values
+
 ## v0.8.2.python2
 
 * Simplified `NullBooleanPGPPublicKeyField` field

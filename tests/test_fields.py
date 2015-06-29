@@ -133,6 +133,12 @@ class TestEncryptedTextFieldModel(TestCase):
         value = instance.pgp_pub_date_field
         self.assertEqual(value, expected)
 
+    def test_value_pgp_date_pub_null(self):
+        """Assert we can get back the decrypted value."""
+        EncryptedModelFactory.create(pgp_pub_date_field=None)
+        instance = self.model.objects.get()
+        self.assertIsNone(instance.pgp_pub_date_field)
+
     def test_value_pgp_null_boolean_pub(self):
         """Assert we can get back the decrypted values."""
         EncryptedModelFactory.create(pgp_pub_null_boolean_field=None)

@@ -56,6 +56,8 @@ class DatePGPPublicKeyField(PGPPublicKeyFieldMixin, models.DateField):
 
     @classmethod
     def _parse_decrypted_value(cls, value):
+        if value is None:
+            return None
         return datetime.datetime.strptime(value, "%Y-%m-%d").date()
 
     def get_prep_value(self, value):
@@ -64,6 +66,8 @@ class DatePGPPublicKeyField(PGPPublicKeyFieldMixin, models.DateField):
 
         Need explicit string cast to avoid quotes.
         """
+        if value is None:
+            return None
         return "%s" % super(DatePGPPublicKeyField, self).get_prep_value(value)
 
 
