@@ -1,3 +1,7 @@
+## v0.8.2.python2
+
+* Simplified `NullBooleanPGPPublicKeyField` field
+
 ## v0.8.1.python2
 
 * Added `NullBooleanPGPPublicKeyField` field
