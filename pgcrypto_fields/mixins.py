@@ -2,7 +2,6 @@ from django.core.validators import MaxLengthValidator
 
 from pgcrypto_fields.aggregates import (
     PGPPublicKeyAggregate,
-    PGPSymmetricKeyAggregate,
 )
 from pgcrypto_fields.proxy import EncryptedProxyField
 
@@ -10,25 +9,6 @@ from pgcrypto_fields.proxy import EncryptedProxyField
 def remove_validators(validators, validator_class):
     """Exclude `validator_class` instances from `validators` list."""
     return [v for v in validators if not isinstance(v, validator_class)]
-
-
-class HashMixin(object):
-    """Keyed hash mixin.
-
-    `HashMixin` uses 'pgcrypto' to encrypt data in a postgres database.
-    """
-    def get_placeholder(self, value=None, compiler=None, connection=None):
-        """
-        Tell postgres to encrypt this field with a hashing function.
-
-        The `value` string is checked to determine if we need to hash or keep
-        the current value.
-
-        `compiler` and `connection` is ignored here as we don't need custom operators.
-        """
-        if value is None or value.startswith("\\x"):
-            return '%s'
-        return self.encrypt_sql
 
 
 class PGPMixin(object):
@@ -79,11 +59,6 @@ class PGPPublicKeyFieldMixin(PGPMixin):
     aggregate = PGPPublicKeyAggregate
 
 
-class PGPSymmetricKeyFieldMixin(PGPMixin):
-    """PGP symmetric key encrypted field mixin for postgred."""
-    aggregate = PGPSymmetricKeyAggregate
-
-
 class RemoveMaxLengthValidatorMixin(object):
     """Exclude `MaxLengthValidator` from field validators."""
     def __init__(self, *args, **kwargs):
@@ -95,8 +70,3 @@ class RemoveMaxLengthValidatorMixin(object):
 class EmailPGPPublicKeyFieldMixin(PGPPublicKeyFieldMixin,
                                   RemoveMaxLengthValidatorMixin):
     """Email mixin for PGP public key fields."""
-
-
-class EmailPGPSymmetricKeyFieldMixin(PGPSymmetricKeyFieldMixin,
-                                     RemoveMaxLengthValidatorMixin):
-    """Email mixin for PGP symmetric key fields."""

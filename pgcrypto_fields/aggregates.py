@@ -26,27 +26,6 @@ class PGPPublicKeySQL(Aggregate):
     )
 
 
-class PGPSymmetricKeySQL(Aggregate):
-    """Custom SQL aggregate to decrypt a field with public key.
-
-    `PGPSymmetricKeySQL` provides a SQL template using pgcrypto to decrypt
-    data from a field in the database.
-
-    `sql_function` defines `pgp_sym_decrypt` which is a pgcrypto SQL function.
-    This function takes two arguments:
-    - a encrypted message (bytea);
-    - a key (bytea).
-
-    `%(function)s` in `sql_template` is populated by `sql_function`.
-
-    `%(field)s` is replaced with the field's name.
-    """
-    sql_function = 'pgp_sym_decrypt'
-    sql_template = "%(function)s(%(field)s, '{}')".format(
-        settings.PGCRYPTO_KEY,
-    )
-
-
 class EncryptionBase(models.Aggregate):
     """Base class to add a custom aggregate method to a query."""
 
@@ -74,13 +53,3 @@ class PGPPublicKeyAggregate(EncryptionBase):
     """
     name = 'decrypted'
     sql = PGPPublicKeySQL
-
-
-class PGPSymmetricKeyAggregate(EncryptionBase):
-    """PGP symmetric key based aggregation.
-
-    `pgp_sym_encrypt` is a pgcrypto functions, encrypts the field's value
-    with a key.
-    """
-    name = 'decrypted'
-    sql = PGPSymmetricKeySQL

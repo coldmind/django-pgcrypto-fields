@@ -10,15 +10,8 @@ class EncryptedModelFactory(factory.DjangoModelFactory):
     class Meta:
         model = EncryptedModel
 
-    digest_field = factory.Sequence('Text digest {}'.format)
-    hmac_field = factory.Sequence('Text hmac {}'.format)
-
     email_pgp_pub_field = factory.Sequence('email{}@public.key'.format)
     integer_pgp_pub_field = 42
     pgp_pub_field = factory.Sequence('Text with public key {}'.format)
     pgp_pub_date_field = datetime.date(year=2000, month=1, day=1)
     pgp_pub_null_boolean_field = True
-
-    email_pgp_sym_field = factory.Sequence('email{}@symmetric.key'.format)
-    integer_pgp_sym_field = 43
-    pgp_sym_field = factory.Sequence('Text with symmetric key {}'.format)

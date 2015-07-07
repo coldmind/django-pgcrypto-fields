@@ -40,13 +40,11 @@ class EncryptedProxyField(object):
             return value
 
         if isinstance(value, buffer):
-            kwargs = {self.field.name: self.aggregate(self.field.name)}
-            kw_value = self.model.objects.filter(pk=instance.pk).aggregate(**kwargs)
-            decrypted_value = self._parse_decrypted_value(
-                kw_value[self.field.name], self.field
-            )
-            instance.__dict__[self.field.name] = decrypted_value
+            print('Unexpected encrypted field "%s"!' % self.field.name)
 
+        instance.__dict__[self.field.name] = self._parse_decrypted_value(
+            value, self.field
+        )
         return instance.__dict__[self.field.name]
 
     def __set__(self, instance, value):

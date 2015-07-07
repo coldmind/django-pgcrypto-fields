@@ -1,3 +1,8 @@
+## v0.9.0.python2
+
+* Removed all except public key fields.
+* Added custom manager to decrypt values at the query time.
+
 ## v0.8.3.python2
 
 * Fixed `DatePGPPublicKeyField` with nullable values

@@ -1,7 +1,5 @@
 from django.db.models.lookups import Lookup
 
-from pgcrypto_fields import DIGEST_SQL, HMAC_SQL
-
 
 class HashLookupBase(Lookup):
     """Lookup to filter hashed values.
@@ -23,21 +21,3 @@ class HashLookupBase(Lookup):
 
         rhs = self.encrypt_sql % rhs
         return ('{}::bytea = {}'.format(lhs, rhs)), params
-
-
-class DigestLookup(HashLookupBase):
-    """Digest lookup producing a hash.
-
-    `encrypt_sql` uses pgcrypto 'digest' function to create a hash based version
-    of the field's value.
-    """
-    encrypt_sql = DIGEST_SQL
-
-
-class HMACLookup(HashLookupBase):
-    """HMAC lookup producing a hash.
-
-    `encrypt_sql` uses pgcrypto 'hmac' function to create a hash based version
-    the field's value.
-    """
-    encrypt_sql = HMAC_SQL
