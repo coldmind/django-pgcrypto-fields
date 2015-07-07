@@ -8,6 +8,8 @@ from pgcrypto_fields.mixins import PGPMixin
 class PGPEncryptedManager(models.Manager):
     """Custom manager to decrypt values at query time."""
 
+    use_for_related_fields = True
+
     def get_queryset(self, *args, **kwargs):
         """Django queryset.extra() is used here to add decryption sql to query."""
         select_sql = {}
