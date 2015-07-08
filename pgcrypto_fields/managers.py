@@ -8,6 +8,7 @@ class PGPEncryptedManager(models.Manager):
     """Custom manager to decrypt values at query time."""
 
     use_for_related_fields = True
+    decrypt_sql = """pgp_pub_decrypt("{0}"."{1}", dearmor('{2}'))"""
 
     def get_queryset(self, *args, **kwargs):
         """Django queryset.extra() is used here to add decryption sql to query."""
@@ -15,7 +16,8 @@ class PGPEncryptedManager(models.Manager):
         for f in self.model._meta.get_fields_with_model():
             field = f[0]
             if isinstance(field, PGPMixin):
-                select_sql[field.name] = """pgp_pub_decrypt("{0}"."{1}", dearmor('{2}'))""".format(
+                select_sql[field.name] = self.decrypt_sql.format(
                     field.model._meta.db_table, field.name, settings.PRIVATE_PGP_KEY,
                 )
-        return super(PGPEncryptedManager, self).get_queryset(*args, **kwargs).extra(select=select_sql)
+        return super(PGPEncryptedManager, self).get_queryset(
+            *args, **kwargs).extra(select=select_sql)
