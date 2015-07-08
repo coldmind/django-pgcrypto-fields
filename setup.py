@@ -1,7 +1,7 @@
 from setuptools import find_packages, setup
 
 
-version = '0.8.3.python2'
+version = '0.9.0.python2'
 
 
 setup(
@@ -12,7 +12,7 @@ setup(
     license='BSD',
     description='Encrypted fields dealing with pgcrypto postgres extension.',
     classifiers=[
-        'Development Status :: 4 - Beta (python2)',
+        'Development Status :: 1 - Beta',
         'Framework :: Django',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',

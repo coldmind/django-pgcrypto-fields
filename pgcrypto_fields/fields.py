@@ -1,7 +1,5 @@
 from __future__ import unicode_literals
 
-import datetime
-
 from django.db import models
 from django.db.utils import six
 
@@ -23,6 +21,7 @@ class EmailPGPPublicKeyField(EmailPGPPublicKeyFieldMixin, models.EmailField):
 class IntegerPGPPublicKeyField(PGPPublicKeyFieldMixin, models.IntegerField):
     """Integer PGP public key encrypted field."""
     encrypt_sql = INTEGER_PGP_PUB_ENCRYPT_SQL
+    cast_sql = "CAST(nullif(%s, '') AS integer)"
 
     @classmethod
     def _parse_decrypted_value(cls, value):
@@ -40,15 +39,7 @@ class DatePGPPublicKeyField(PGPPublicKeyFieldMixin, models.DateField):
     """Date PGP public key encrypted field."""
 
     encrypt_sql = PGP_PUB_ENCRYPT_SQL
-
-    @classmethod
-    def _parse_decrypted_value(cls, value):
-        if not isinstance(value, six.string_types):
-            return value
-
-        if value is None:
-            return None
-        return datetime.datetime.strptime(value, "%Y-%m-%d").date()
+    cast_sql = "to_date(%s, 'YYYY-MM-DD')"
 
     def get_prep_value(self, value):
         """
@@ -65,6 +56,7 @@ class NullBooleanPGPPublicKeyField(PGPPublicKeyFieldMixin, models.NullBooleanFie
     """NullBoolean PGP public key encrypted field."""
 
     encrypt_sql = PGP_PUB_ENCRYPT_SQL
+    cast_sql = "CASE %s WHEN 'True' THEN TRUE WHEN 'False' THEN FALSE ELSE NULL END"
 
     def get_prep_value(self, value):
         """Before encryption, need to prepare values."""
@@ -72,19 +64,3 @@ class NullBooleanPGPPublicKeyField(PGPPublicKeyFieldMixin, models.NullBooleanFie
         if value is None:
             return None
         return "%s" % bool(value)
-
-    @classmethod
-    def _parse_decrypted_value(cls, value):
-        if not isinstance(value, six.string_types):
-            return value
-
-        if value == 'True':
-            value = True
-        elif value == 'False':
-            value = False
-        else:
-            raise ValueError(
-                'Unexpected returned value. '
-                'Value: %s, type: %s' % (value, type(value))
-            )
-        return value

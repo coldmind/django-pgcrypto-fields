@@ -193,11 +193,17 @@ class TestEncryptedTextFieldModel(TestCase):
         updated_instance = self.model.objects.get()
         self.assertEqual(updated_instance.pgp_pub_field, expected)
 
-    def test_pgp_public_key_negative_number(self):
+    def test_pgp_int_public_key_negative_number(self):
         """Assert negative value is saved with an `IntegerPGPPublicKeyField` field."""
         expected = -1
         instance = EncryptedModelFactory.create(integer_pgp_pub_field=expected)
 
+        self.assertEqual(instance.integer_pgp_pub_field, expected)
+
+    def test_pgp_int_public_key_null_number(self):
+        """Assert negative value is saved with an `IntegerPGPPublicKeyField` field."""
+        expected = None
+        instance = EncryptedModelFactory.create(integer_pgp_pub_field=expected)
         self.assertEqual(instance.integer_pgp_pub_field, expected)
 
     def test_null(self):

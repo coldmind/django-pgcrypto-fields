@@ -42,9 +42,6 @@ class EncryptedProxyField(object):
         if isinstance(value, buffer):
             print('Unexpected encrypted field "%s"!' % self.field.name)
 
-        instance.__dict__[self.field.name] = self._parse_decrypted_value(
-            value, self.field
-        )
         return instance.__dict__[self.field.name]
 
     def __set__(self, instance, value):
